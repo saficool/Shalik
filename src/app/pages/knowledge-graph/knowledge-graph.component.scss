@@ -1,0 +1,23 @@
+textarea {
+  resize: none;
+}
+
+#graphCard {
+  height: calc(100vh - 150px);
+}
+
+.card-body#graphCardBody {
+  position: relative;
+}
+.graph-action-item {
+  position: absolute;
+  top: 5px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 99;
+  display: flex;
+  gap: 5px;
+}
+#misc-card {
+  height: calc(71vh - 2px);
+}
