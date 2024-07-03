@@ -4,7 +4,7 @@ import { KnowledgeGraphService } from '../../services/knowledge-graph.service';
 import { CommonService } from '../../services/common.service';
 import { LocalStorageManagerService } from '../../services/local-storage-manager.service';
 import ForceGraph, { LinkObject, NodeObject } from 'force-graph';
-import { FormsModule } from "@angular/forms"
+import { FormsModule } from "@angular/forms";
 import { CommonModule } from '@angular/common';
 
 
@@ -25,6 +25,11 @@ export class KnowledgeGraphComponent {
   protected graphData!: KnowledgeGraphData
   protected openai_api_key: string = ""
   protected api_input_field_type: string = 'password'
+
+  public NODE_R = 8;
+  private highlightNodes = new Set();
+  private highlightLinks = new Set();
+  private hoverNode = null;
 
   //Dependency injection
   private knowledgeGraphService = inject(KnowledgeGraphService)
@@ -49,7 +54,6 @@ export class KnowledgeGraphComponent {
       this.localStorageManagerService.removeItem('openai_api_key')
     }
   }
-
   private getOpenAiKey() {
     this.openai_api_key = this.localStorageManagerService.getItem('openai_api_key') || ""
   }
@@ -61,19 +65,16 @@ export class KnowledgeGraphComponent {
       this.api_input_field_type = 'text'
     }
   }
-
   private initGraphLLM() {
     if (this.openai_api_key) {
       this.knowledgeGraphService.initGraphLLM(this.openai_api_key)
     }
   }
-
   private setGraphDimension() {
     const divElement = this.graphCardBody.nativeElement;
     this.graphConfig = { width: divElement.offsetWidth - 8, height: divElement.offsetHeight - 8 }
     this.initGrpah()
   }
-
   private async initGrpah(): Promise<void> {
     const _graph = document.getElementById('graph')!
     this.Graph = ForceGraph()(_graph);
@@ -82,25 +83,55 @@ export class KnowledgeGraphComponent {
       .height(this.graphConfig.height)
       .nodeId('id')
       .nodeLabel('label')
+      .nodeColor("color")
+      .nodeRelSize(0)
       .nodeAutoColorBy('type')
+      .nodeCanvasObjectMode(() => 'after')
       .nodeCanvasObject((node: NodeObject, ctx: CanvasRenderingContext2D, globalScale: number) => { this.knowledgeGraphService.nodeCanvasObject(node, ctx, globalScale) })
       .nodePointerAreaPaint((node: NodeObject, color: string, ctx: CanvasRenderingContext2D) => { this.knowledgeGraphService.nodePointerAreaPaint(node, color, ctx) })
-      .onNodeClick((node: NodeObject) => { this.Graph.centerAt(node.x, node.y, 1000); this.Graph.zoom(8, 2000); })
-      .linkDirectionalArrowLength(4)
-      .linkDirectionalArrowRelPos(1)
+      .linkDirectionalArrowRelPos(0.75)
+      .linkDirectionalArrowLength((link: any) => this.highlightLinks.has(link) ? 3 : 2)
       .linkCurvature('curvature')
+      .linkColor((link: any) => this.highlightLinks.has(link) ? 'orange' : '#A4A4A4')
+      .linkWidth((link: any) => this.highlightLinks.has(link) ? 3 : 2)
       .linkCanvasObjectMode(() => 'after')
-      .linkCanvasObject((link: LinkObject, ctx: CanvasRenderingContext2D) => { this.knowledgeGraphService.linkCanvasObject(link, ctx) })
-
+      .linkCanvasObject((link: LinkObject, ctx: CanvasRenderingContext2D, globalScale: number) => { this.knowledgeGraphService.linkCanvasObject(link, ctx, globalScale, this.Graph) })
+      .linkDirectionalParticles(() => 4)
+      .linkDirectionalParticleWidth((link: any) => this.highlightLinks.has(link) ? 2 : 0)
+      .linkDirectionalParticleColor(() => 'blue')
+      .linkDirectionalParticleSpeed(() => 0.01)
+      .onNodeClick((node: NodeObject) => this.knowledgeGraphService.zoomNodeAtCenter(node, this.Graph))
+      .onNodeHover((node: NodeObject) => this.nodeHighlight(node))
+      .onNodeDragEnd((node: NodeObject) => { node.fx = node.x; node.fy = node.y; })
+      .onLinkHover((link: any) => { this.linkHighlight(link) })
+      .d3Force('center', null)
+      .onEngineStop(() => this.Graph.zoomToFit(1000));
   }
+  async nodeHighlight(node: any) {
+    this.highlightNodes.clear();
+    this.highlightLinks.clear();
+    if (node) {
+      this.highlightNodes.add(node);
+      node.neighbors.forEach((neighbor: any) => this.highlightNodes.add(neighbor));
+      node.links.forEach((link: any) => this.highlightLinks.add(link));
+    }
+    this.hoverNode = node || null;
+  }
+  async linkHighlight(link: LinkObject) {
+    this.highlightNodes.clear();
+    this.highlightLinks.clear();
 
-
+    if (link) {
+      this.highlightLinks.add(link);
+      this.highlightNodes.add(link.source);
+      this.highlightNodes.add(link.target);
+    }
+  }
   protected async generateGraph(): Promise<void> {
     await this.initGrpah()
     await this.getGraphdata()
     await this.setGraphdata()
   }
-
   private async getGraphdata(): Promise<void> {
     const inputText: string = this.inputText.nativeElement.value.trim()
     if (inputText) {
@@ -109,30 +140,17 @@ export class KnowledgeGraphComponent {
         .then((data: KnowledgeGraphData) => { this.graphData = data; this.loading = false })
     }
   }
-
   private async setGraphdata(): Promise<void> {
     this.Graph.graphData(this.graphData)
-      .linkAutoColorBy((d: any) => {
-        var node = this.graphData.nodes.find(f => f.id == d.source)
-        if (node) {
-          return node.type
-        }
-        else {
-          return 'other'
-        }
-      }
-      )
+      .linkAutoColorBy((link: LinkObject) => { this.knowledgeGraphService.linkAutoColorBy(link, this.graphData) })
   }
-
   protected clearText() {
     this.inputText.nativeElement.value = ''
     this.initGrpah()
   }
-
   protected fitGraphToCanvas() {
     this.Graph.zoomToFit(500)
   }
-
   protected screenshotGraph() {
     var node = document.getElementById('graph')!;
     this.commonService.htmlToImageCopy(node)
