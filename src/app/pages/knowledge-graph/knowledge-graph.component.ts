@@ -29,7 +29,6 @@ export class KnowledgeGraphComponent {
   public NODE_R = 8;
   private highlightNodes = new Set();
   private highlightLinks = new Set();
-  private hoverNode = null;
 
   //Dependency injection
   private knowledgeGraphService = inject(KnowledgeGraphService)
@@ -115,7 +114,6 @@ export class KnowledgeGraphComponent {
       node.neighbors.forEach((neighbor: any) => this.highlightNodes.add(neighbor));
       node.links.forEach((link: any) => this.highlightLinks.add(link));
     }
-    this.hoverNode = node || null;
   }
   async linkHighlight(link: LinkObject) {
     this.highlightNodes.clear();

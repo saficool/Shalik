@@ -1,7 +1,9 @@
 .card#action-card {
   height: calc(100vh - 10px);
   border: 1px solid white;
-  box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.13), 0 1px 1px 0 rgba(0, 0, 0, 0.11);
+  box-shadow: -2px 0px 4px 0 rgba(0, 0, 0, 0.2) /* Left side shadow */,
+    0 2px 4px 0 rgba(0, 0, 0, 0.2) /* Top side shadow */,
+    0 -2px 4px 0 rgba(0, 0, 0, 0.2); /* Bottom side shadow */
 }
 
 textarea {
