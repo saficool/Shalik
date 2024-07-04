@@ -16,7 +16,7 @@ import { CommonModule } from '@angular/common';
   styleUrl: './knowledge-graph.component.scss'
 })
 export class KnowledgeGraphComponent {
-  @ViewChild('graphCardBody', { static: false }) graphCardBody!: ElementRef;
+  @ViewChild('graphContiner', { static: false }) graphContiner!: ElementRef;
   @ViewChild('inputText', { static: false }) inputText!: ElementRef<HTMLTextAreaElement>
   protected loading: boolean = false
 
@@ -71,7 +71,7 @@ export class KnowledgeGraphComponent {
     }
   }
   private setGraphDimension() {
-    const divElement = this.graphCardBody.nativeElement;
+    const divElement = this.graphContiner.nativeElement;
     this.graphConfig = { width: divElement.offsetWidth - 8, height: divElement.offsetHeight - 8 }
     this.initGrpah()
   }

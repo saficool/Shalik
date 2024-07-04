@@ -1,12 +1,18 @@
+.card#action-card {
+  height: calc(100vh - 10px);
+  border: 1px solid white;
+  box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.13), 0 1px 1px 0 rgba(0, 0, 0, 0.11);
+}
+
 textarea {
   resize: none;
 }
 
-#graphCard {
-  height: calc(100vh - 150px);
+#graphContiner {
+  height: calc(100vh - 10px);
 }
 
-.card-body#graphCardBody {
+#graphContiner {
   position: relative;
 }
 .graph-action-item {
@@ -17,7 +23,4 @@ textarea {
   z-index: 99;
   display: flex;
   gap: 5px;
-}
-#misc-card {
-  height: calc(71vh - 2px);
 }
