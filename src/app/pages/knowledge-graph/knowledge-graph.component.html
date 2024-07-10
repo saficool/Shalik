@@ -2,22 +2,20 @@
     <div class="row g-1">
         <div class="col-md-3">
             <div class="card" id="action-card">
-                <div class="card-header d-flex gap-2 p-2">
-                    <div class="fs-6 fw-semibold">Knowledge Graph</div>
+                <div class="card-header p-2">
+                    <h5 class="card-title">Relation Graph</h5>
                 </div>
                 <div class="card-body p-2">
                     <div class="d-flex gap-2 mb-2">
-                        <div class="w-100">
-                            <div class="input-group input-group-sm">
-                                <input [type]="api_input_field_type" [(ngModel)]="openai_api_key"
-                                    class="form-control shadow-none" placeholder="OpenAI Key"
-                                    aria-label="OpenAi APi key" aria-describedby="openai_key">
-                                <span class="input-group-text" type="button" id="openai_key"
-                                    (click)="togglekeyVisibility()">
-                                    <i class="bi"
-                                        [ngClass]="{'bi-eye-slash':api_input_field_type==='text', 'bi-eye':api_input_field_type==='password'}"></i>
-                                </span>
-                            </div>
+                        <div class="input-group input-group-sm">
+                            <input [type]="api_input_field_type" [(ngModel)]="openai_api_key"
+                                class="form-control shadow-none" placeholder="OpenAI Key" aria-label="OpenAi APi key"
+                                aria-describedby="openai_key">
+                            <span class="input-group-text" type="button" id="openai_key"
+                                (click)="togglekeyVisibility()">
+                                <i class="bi"
+                                    [ngClass]="{'bi-eye-slash':api_input_field_type==='text', 'bi-eye':api_input_field_type==='password'}"></i>
+                            </span>
                         </div>
                         <button class="btn btn-sm btn-success text-nowrap" (click)="saveOpenAiKey()">
                             <i class="bi bi-floppy-fill me-2"></i>Save
@@ -44,11 +42,11 @@
         <div class="col-md-9">
             <div #graphContiner class="rounded-2" id="graphContiner">
                 <div class="graph-action-item">
-                    <button title="Zoom" class="btn btn-sm btn-outline-primary" pTooltip="Zoom to fit"
-                        tooltipPosition="right" (click)="fitGraphToCanvas()" [disabled]="!graphData">
+                    <button title="Zoom" class="btn btn-sm btn-primary" pTooltip="Zoom to fit" tooltipPosition="right"
+                        (click)="fitGraphToCanvas()" [disabled]="!graphData">
                         <i class="bi bi-arrows-fullscreen"></i>
                     </button>
-                    <button title="Screenshot" class="btn btn-sm btn-outline-primary" pTooltip="Screenshot"
+                    <button title="Screenshot" class="btn btn-sm btn-primary" pTooltip="Screenshot"
                         tooltipPosition="right" (click)="screenshotGraph()" [disabled]="!graphData">
                         <i class="bi bi-camera"></i>
                     </button>

@@ -1,11 +1,6 @@
 .card#action-card {
   height: calc(100vh - 10px);
-  border: 1px solid white;
-  box-shadow: -2px 0px 4px 0 rgba(0, 0, 0, 0.2) /* Left side shadow */,
-    0 2px 4px 0 rgba(0, 0, 0, 0.2) /* Top side shadow */,
-    0 -2px 4px 0 rgba(0, 0, 0, 0.2); /* Bottom side shadow */
 }
-
 textarea {
   resize: none;
 }
@@ -17,9 +12,10 @@ textarea {
 #graphContiner {
   position: relative;
 }
+
 .graph-action-item {
   position: absolute;
-  top: 5px;
+  top: 0;
   left: 50%;
   transform: translateX(-50%);
   z-index: 99;

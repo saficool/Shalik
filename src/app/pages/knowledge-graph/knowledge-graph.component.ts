@@ -6,6 +6,7 @@ import { LocalStorageManagerService } from '../../services/local-storage-manager
 import ForceGraph, { LinkObject, NodeObject } from 'force-graph';
 import { FormsModule } from "@angular/forms";
 import { CommonModule } from '@angular/common';
+import { ToastrService } from 'ngx-toastr';
 
 
 @Component({
@@ -34,6 +35,7 @@ export class KnowledgeGraphComponent {
   private knowledgeGraphService = inject(KnowledgeGraphService)
   private commonService = inject(CommonService)
   private localStorageManagerService = inject(LocalStorageManagerService)
+  private toastr = inject(ToastrService)
 
 
   ngOnInit(): void {

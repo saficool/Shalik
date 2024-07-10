@@ -7,6 +7,7 @@ import { LinkObject } from 'force-graph';
 
 const SYSTEM_PROMPT = `Generate a knowledge graph based on the given information.\n
 The output should be in valid JSON format and match the specified schema.\n
+Make sure that, no node should be disconnected from the graph. \n
 Each node must have at least one relation with another node, and the relationships should capture both direct and indirect connections.`
 
 type KnowledgeGraphDataType = {
@@ -171,6 +172,6 @@ export class KnowledgeGraphService {
   }
   public zoomNodeAtCenter(node: any, graph: any) {
     graph.centerAt(node.x, node.y, 1000);
-    graph.zoom(8, 2000)
+    graph.zoom(6, 2000)
   }
 }
